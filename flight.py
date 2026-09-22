@@ -6,11 +6,10 @@ class Flight:
     """
     Represents a flight with its detailed data.
     """
-    def __init__(self, flight_id, origin, destination, arrival_date, departure_date, base_fare, capacity, seats_sold, time_factor, demand_factor, capacity_factor, seasonal_factor, adjusted_fare):
+    def __init__(self, flight_id, origin, destination, departure_date, base_fare, capacity, seats_sold, time_factor, demand_factor, capacity_factor, seasonal_factor, adjusted_fare):
         self.flight_id = flight_id
         self.origin = origin
         self.destination = destination
-        self.arrival_date = arrival_date
         self.departure_date = departure_date
         self.base_fare = base_fare
         self.capacity = capacity
@@ -34,10 +33,6 @@ class Flight:
             raise ValueError("Invalid origin.")
         if not self.destination or not isinstance(self.destination, str):
             raise ValueError("Invalid destination.")
-
-        # Check for valid departure and arrival dates
-        if self.departure_date >= self.arrival_date:
-            raise ValueError("Departure date must be before arrival date.")
 
         # Check for valid fare, capacity, and seats sold
         if self.base_fare < 0:
