@@ -27,7 +27,7 @@ def create_table():
                 demand_factor REAL NOT NULL,
                 capacity_factor REAL NOT NULL,
                 seasonal_factor REAL NOT NULL,
-                adjusted_fare REAL NOT NULL,
+                adjusted_fare REAL NOT NULL
             )
         """)
 
