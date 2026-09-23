@@ -43,3 +43,20 @@ class Flight:
             raise ValueError("Seats sold must be between 0 and capacity.")
         if self.adjusted_fare < 0:
             raise ValueError("Adjusted fare cannot be negative.")
+
+    
+    def to_dictionary(self):
+        """
+        Converts the Flight object into a dictionary.
+        """
+
+        return {
+            "flight_id": self.flight_id,
+            "origin": self.origin,
+            "destination": self.destination,
+            "departure_date": self.departure_date.strftime("%Y-%m-%d"),
+            "base_fare": round(self.base_fare, 2),
+            "capacity": self.capacity,
+            "seats_sold": self.seats_sold,
+            #"seats_remaining": self.capacity - self.seats_sold,
+        }
