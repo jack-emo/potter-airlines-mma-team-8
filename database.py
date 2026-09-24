@@ -3,7 +3,7 @@ Contains Python functions that interact with SQLite: connecting to the database
 and doing INSERT, SELECT, UPDATE, and DELETE operations using parameters.
 """
 import sqlite3
-DB_PATH = "flights.db"
+DB_PATH = "potter_airlines.db"
 
 # Initialize database connection
 def create_connection():
