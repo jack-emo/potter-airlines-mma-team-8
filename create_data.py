@@ -3,85 +3,49 @@ File for creating flight data for potter airlines project
 """
 
 import pandas as pd
-import numpy as np
 import random
-import sqlite3
-# from datetime import date, timedelta
-
-
-random.seed(8) # Set seed for reproducibility, choose 8 because we are team 8
-np.random.seed(8)
-
 from flight import Flight
+from constants import CITIES, CSV_PATH, FLIGHT_INPUT_COLUMNS, REFERENCE_DATE, SEED
 
-number_of_flights = 100
-# reference_date = date(2026, 9, 13)
 
-cities =[
-    "Toronto",
-    "Vancouver",
-    "Montreal",
-    "Halifax",
-    "Calgary",
-    "Ottawa",
-    "London",
-    "Hogsmeade",
-    "Diagon Alley",
-]
+def generate_flight_data(number_of_flights=100):
+    """Build raw Flight objects. Pricing factors are calculated later."""
+    random.seed(SEED)
 
-capacities = [80, 100, 120, 150, 180]
+    capacities = [80, 100, 120, 150, 180]
+    flights = []
 
-flights = []
+    for i in range(number_of_flights):
+        origin, destination = random.sample(CITIES, 2)
+        days_until_departure = random.randint(1, 90)
+        departure_date = pd.Timestamp(REFERENCE_DATE) + pd.Timedelta(days=days_until_departure)
+        capacity = random.choice(capacities)
+        seats_sold = random.randint(0, capacity)
 
-for i in range(number_of_flights):
-    origin, destination = random.sample(cities, 2)
+        flight = Flight(
+            flight_id=f"PD{i+1:03d}",
+            origin=origin,
+            destination=destination,
+            departure_date=departure_date,
+            base_fare=round(random.uniform(100, 500), 2),
+            capacity=capacity,
+            seats_sold=seats_sold,
+        )
 
-    days_until_departure = random.randint(1, 90)  # Randomly choose a departure date within the next 90 days
-    departure_date = pd.Timestamp.now() + pd.Timedelta(days=days_until_departure)
+        flight.validate_flight()
+        flights.append(flight)
 
-    capacity = random.choice(capacities)
-    seats_sold = random.randint(0, capacity) # Would it be better to do seats_remaining?
+    return flights
 
-    flight = Flight(
-        flight_id=f"PD{i+1:03d}",
-        origin=origin,
-        destination=destination,
-        departure_date=departure_date,
-        base_fare=random.uniform(100, 500),  # Random base fare between $100 and $500
-        capacity=capacity,
-        seats_sold=seats_sold,
-        time_factor=1,  # Random time factor between 0.8 and 1.2
-        demand_factor=1,  # Random demand factor between 0.8 and 1.2
-        capacity_factor=1,  # Random capacity factor between 0.8 and 1.2
-        seasonal_factor=1,  # Random seasonal factor between 0.8 and 1.2
-        adjusted_fare=1  # Random adjusted fare between $100 and $500
-    )
 
-    # Validate the flight data
-    flight.validate_flight()
-    flights.append(flight)
+def save_flights_csv(flights, csv_path=CSV_PATH):
+    """Write raw flight inputs to CSV for later pricing and database insert."""
+    flight_data = []
+    for flight in flights:
+        row = {column: getattr(flight, column) for column in FLIGHT_INPUT_COLUMNS}
+        row["departure_date"] = flight.departure_date.strftime("%Y-%m-%d")
+        flight_data.append(row)
 
-# Convert Flight objects into a DataFrame
-flight_data = [
-flight.to_dictionary()
-    for flight in flights]
-
-# CSV output to check the generated data
-flights_df = pd.DataFrame(flight_data)
-flights_df.to_csv("potter_flights_generated.csv", index=False)
-
-# Create the SQLite database
-with sqlite3.connect("potter_airlines.db") as connection:
-    flights_df.to_sql(
-        "flights",
-        connection,
-        if_exists="replace",
-        index=False,
-    )
-
-    count = connection.execute(
-        "SELECT COUNT(*) FROM flights"
-    ).fetchone()[0]
-
-print(f"Created potter_airlines.db with {count} flights.")
-print(flights_df.head())
+    flights_df = pd.DataFrame(flight_data, columns=FLIGHT_INPUT_COLUMNS)
+    flights_df.to_csv(csv_path, index=False)
+    return flights_df

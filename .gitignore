@@ -1,6 +1,8 @@
 venv/
 .DS_Store
 .vscode/
-.env__pycache__/
+.env
+__pycache__/
 *.pyc
 potter_flights_generated.csv
+potter_airlines.db

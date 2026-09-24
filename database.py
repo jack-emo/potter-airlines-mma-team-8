@@ -1,16 +1,19 @@
 """
-Contains Python functions that interact with SQLite: connecting to the database 
+Contains Python functions that interact with SQLite: connecting to the database
 and doing INSERT, SELECT, UPDATE, and DELETE operations using parameters.
 """
 import sqlite3
-DB_PATH = "potter_airlines.db"
+
+import pandas as pd
+
+from constants import DB_PATH
 
 # Initialize database connection
 def create_connection():
     """Create a database connection to the SQLite database specified by db_file."""
     return sqlite3.connect(DB_PATH)
 
-# Create the flights table if it does not already exist    
+# Create the flights table if it does not already exist
 def create_table():
     """Create the flights table if it does not already exist."""
     with create_connection() as conn:
@@ -31,13 +34,12 @@ def create_table():
             )
         """)
 
-# INSERT update into flights table
 def insert_flight(flight):
     """Insert one flight into the database."""
     with create_connection() as conn:
         conn.execute(
             """
-            INSERT INTO flights (
+            INSERT OR REPLACE INTO flights (
                 flight_id,
                 origin,
                 destination,
@@ -69,14 +71,20 @@ def insert_flight(flight):
             ),
         )
 
-# GET all flights from database
+
+def insert_flights(flights_df):
+    """Insert each priced flight with insert_flight."""
+    for flight in flights_df.itertuples(index=False):
+        insert_flight(flight)
+
 def get_all_flights():
     """Retrieve all flights."""
     with create_connection() as conn:
         cursor = conn.execute("SELECT * FROM flights")
-        return cursor.fetchall()
+        rows = cursor.fetchall()
+        columns = [column[0] for column in cursor.description]
+    return pd.DataFrame(rows, columns=columns)
 
-# Get one flight by ID
 def get_flight(flight_id):
     """Retrieve one flight by ID."""
     with create_connection() as conn:
@@ -86,7 +94,6 @@ def get_flight(flight_id):
         )
         return cursor.fetchone()
 
-# Update seats sold for a flight
 def update_seats_sold(flight_id, seats_sold):
     """Update an operational value for a flight."""
     with create_connection() as conn:
@@ -99,7 +106,6 @@ def update_seats_sold(flight_id, seats_sold):
             (seats_sold, flight_id),
         )
 
-# Delete a flight by ID
 def delete_flight(flight_id):
     """Delete a flight from the database."""
     with create_connection() as conn:

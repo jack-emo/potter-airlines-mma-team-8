@@ -6,7 +6,7 @@ class Flight:
     """
     Represents a flight with its detailed data.
     """
-    def __init__(self, flight_id, origin, destination, departure_date, base_fare, capacity, seats_sold, time_factor, demand_factor, capacity_factor, seasonal_factor, adjusted_fare):
+    def __init__(self, flight_id, origin, destination, departure_date, base_fare, capacity, seats_sold, time_factor=None, demand_factor=None, capacity_factor=None, seasonal_factor=None, adjusted_fare=None):
         self.flight_id = flight_id
         self.origin = origin
         self.destination = destination
@@ -41,22 +41,5 @@ class Flight:
             raise ValueError("Capacity must be a positive integer.")
         if self.seats_sold < 0 or self.seats_sold > self.capacity:
             raise ValueError("Seats sold must be between 0 and capacity.")
-        if self.adjusted_fare < 0:
+        if self.adjusted_fare is not None and self.adjusted_fare < 0:
             raise ValueError("Adjusted fare cannot be negative.")
-
-    
-    def to_dictionary(self):
-        """
-        Converts the Flight object into a dictionary.
-        """
-
-        return {
-            "flight_id": self.flight_id,
-            "origin": self.origin,
-            "destination": self.destination,
-            "departure_date": self.departure_date.strftime("%Y-%m-%d"),
-            "base_fare": round(self.base_fare, 2),
-            "capacity": self.capacity,
-            "seats_sold": self.seats_sold,
-            #"seats_remaining": self.capacity - self.seats_sold,
-        }
