@@ -20,6 +20,10 @@ class Flight:
         self.seasonal_factor = seasonal_factor
         self.adjusted_fare = adjusted_fare
 
+    @property
+    def seats_remaining(self):
+        return self.capacity - self.seats_sold
+
     def validate_flight(self):
         """
         Validates the flight details.

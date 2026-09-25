@@ -13,6 +13,7 @@ FLIGHT_INPUT_COLUMNS = [
     "base_fare",
     "capacity",
     "seats_sold",
+    "seats_remaining",
 ]
 
 # Higher scores are busier routes. The demand factor is the average of the two cities.
