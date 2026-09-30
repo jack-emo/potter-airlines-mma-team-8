@@ -239,9 +239,9 @@ The `flights` table stores:
 * Seasonal factor
 * Adjusted fare
 
-The database layer demonstrates all four required CRUD operations:
+The database layer creates the database schema and demonstrates the required data operations:
 
-* **CREATE**: creates the `flights` table
+* **CREATE TABLE**: creates the `flights` table
 * **INSERT**: stores generated and priced flights
 * **SELECT**: retrieves all flights or a specific flight
 * **UPDATE**: changes operational information such as seats sold
@@ -313,19 +313,28 @@ numpy
 
 SQLite is included with Python through the standard `sqlite3` library.
 
-### Run the application
+### Set up
 
-From the project directory:
+From the project directory, install the required packages with:
 
 ```bash
-python main.py
+python3 -m pip install pandas numpy
 ```
 
-If using a virtual environment:
+Optional: create and use a virtual environment to keep the project dependencies isolated:
 
 ```bash
+python3 -m venv myenv
 source myenv/bin/activate
-python main.py
+python3 -m pip install pandas numpy
+```
+
+### Run the application
+
+Run the main script with:
+
+```bash
+python3 main.py
 ```
 
 The program will:
